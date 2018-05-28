@@ -1,14 +1,9 @@
-import { MultiGetDownloader } from './MultiGetDownloader';
-import { ChunkData } from './ChunkData';
-import { AppOptionsParser } from './AppOptionsParser';
-import { AppOptions } from './AppOptions';
+import { MultiGetDownloader } from './src/MultiGetDownloader';
+import { ChunkData } from './src/ChunkData';
+import { AppOptionsParser } from './src/AppOptionsParser';
+import { AppOptions } from './src/AppOptions';
 
 function main() {
-  process.on('unhandledRejection', (reason, p) => {
-    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-    // application specific logging, throwing an error, or other logic here
-  });
-
   let appOptions: AppOptions;
   try {
     appOptions = AppOptionsParser.parse();
@@ -28,7 +23,7 @@ function main() {
   const numChunks: number = appOptions.numChunks || 4;
   const chunkSizeBytes: number = appOptions.chunkSizeBytes || 1048576;
 
-  console.log(`Downloading first ${numChunks} chunks of '${url}' to '${filename}'`);
+  process.stdout.write(`Downloading first ${numChunks} chunks of '${url}' to '${filename}'\n`);
   const multiGetDownloader: MultiGetDownloader = new MultiGetDownloader(url, filename);
   multiGetDownloader
     .setNumChunks(numChunks)
@@ -44,7 +39,7 @@ function main() {
     },
     (error) => {
       const message: string = (error.hasOwnProperty('message')) ? error.message : error;
-      console.error("[ERROR]", message);
+      process.stderr.write(`[ERROR] ${message}\n`);
     },
     () => {
       process.stdout.write('done\n');
