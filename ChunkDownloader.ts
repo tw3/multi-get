@@ -9,12 +9,12 @@ export class ChunkDownloader {
   private chunkByteRange: ChunkByteRange;
   private chunkSizeBytes: number;
   private chunkDownload$: Observable<ChunkData>;
-  private debugMode: boolean = false;
+  private verboseMode: boolean = false;
 
   constructor(url: string, chunkByteRange: ChunkByteRange) {
     this.url = url;
     this.chunkByteRange = chunkByteRange;
-    if (this.debugMode) console.log("this.chunkByteRange", this.chunkByteRange);
+    if (this.verboseMode) console.log("this.chunkByteRange", this.chunkByteRange);
     this.initSource();
   }
 
@@ -22,8 +22,9 @@ export class ChunkDownloader {
     return this.chunkDownload$;
   }
 
-  enableDebugMode(): void {
-    this.debugMode = true;
+  enableVerboseMode(): this {
+    this.verboseMode = true;
+    return this;
   }
 
   private initSource(): void {
@@ -33,17 +34,34 @@ export class ChunkDownloader {
       },
       responseType: 'arraybuffer'
     };
-    const axiosPromise: Promise<AxiosResponse<any>> = axios.get(this.url, requestConfig);
-    this.chunkDownload$ = from(axiosPromise)
-    .pipe(
-      map((response: AxiosResponse) => {
-        const chunkData: ChunkData = {
-          range: this.chunkByteRange,
-          blob: response.data
-        };
-        return chunkData;        
-      })
-    )
+    if (this.verboseMode) {
+      console.log("Creating chunk download source");
+    }
+    this.chunkDownload$ = Observable.create((observer) => {
+      if (this.verboseMode) {
+        console.log("Fetching data from", this.url, "range", requestConfig.headers['Range']);
+      }
+      axios.get(this.url, requestConfig)
+        .then((response: AxiosResponse) => {
+          const chunkData: ChunkData = {
+            range: this.chunkByteRange,
+            blob: response.data
+          };
+          if (this.verboseMode) {
+            console.log("Got chunk", chunkData.range);
+          }
+          observer.next(chunkData);
+          observer.complete();
+        })
+        .catch((err) => {
+          if (this.verboseMode) {
+            console.log("Error while fetching:", err.message);
+          }
+          observer.error(err);
+        });
+    });
+
+
   }
 
 }

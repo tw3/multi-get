@@ -13,6 +13,7 @@ export class MultiGetDownloader {
   private numChunks: number = 4;
   private chunkSizeBytes: number = 1048576; // 1 MiB = 1024 KB * 1024 B
   private isParallel: boolean = false;
+  private verboseMode: boolean = false;
 
   constructor(url, filename) {
     this.url = url;
@@ -34,10 +35,25 @@ export class MultiGetDownloader {
     return this;
   }
 
-  run(): Observable<void> {
+  download(): Observable<void> {
+    if (this.verboseMode) {
+      console.log("url", this.url);
+      console.log("filename", this.filename);
+      console.log("numChunks", this.numChunks);
+      console.log("chunkSizeBytes", this.chunkSizeBytes);
+      console.log("isParallel", this.isParallel);
+    }
     const chunkData$: Observable<ChunkData> = this.getChunkData();
     const chunkWriter: ChunkWriter = new ChunkWriter(this.filename);
+    if (this.verboseMode) {
+      chunkWriter.enableVerboseMode();
+    }
     return chunkWriter.saveChunkData(chunkData$);
+  }
+
+  enableVerboseMode(): this {
+    this.verboseMode = true;
+    return this;
   }
 
   private getChunkData(): Observable<ChunkData> {
@@ -46,6 +62,9 @@ export class MultiGetDownloader {
       .map((chunkIdx: number) => {
         const chunkByteRange: ChunkByteRange = this.getChunkByteRange(chunkIdx);
         const chunkDownloader: ChunkDownloader = new ChunkDownloader(this.url, chunkByteRange);
+        if (this.verboseMode) {
+          chunkDownloader.enableVerboseMode();
+        }
         const chunkDownload$: Observable<ChunkData> = chunkDownloader.getSource();
         return chunkDownload$;
       });
