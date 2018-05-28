@@ -1,5 +1,6 @@
 import * as fs from 'fs';
-import { Observable, of, PartialObserver } from "rxjs";
+import { Observable, of } from "rxjs";
+import { flatMap } from 'rxjs/operators';
 import { ChunkData } from "./ChunkData";
 import { ObserveOnOperator } from 'rxjs/internal/operators/observeOn';
 import { ChunkByteRange } from './ChunkByteRange';
@@ -7,12 +8,43 @@ import { ChunkByteRange } from './ChunkByteRange';
 export class ChunkWriter {
   private filename: string;
   private fd: number;
+  private debugMode: boolean = false;
 
   constructor(filename: string) {
     this.filename = filename;
   }
 
-  openFile(): Observable<void> {
+  saveChunkData(chunkData$: Observable<ChunkData>): Observable<void> {
+    return Observable.create((observer) => {
+      this.openFile()
+        .pipe(
+          flatMap(() => chunkData$)
+        )
+        .subscribe(
+          (chunkData: ChunkData) => this.writeChunkData(chunkData, observer),
+          (err) => {
+            this.closeFile().subscribe(
+              () => { },
+              (err) => { },
+              () => observer.error(err)
+            )
+          },
+          () => {
+            this.closeFile().subscribe(
+              () => { },
+              (err) => observer.error(err),
+              () => observer.complete()
+            )
+          }
+        );
+    });
+  }
+
+  enableDebugMode(): void {
+    this.debugMode = true;
+  }
+
+  private openFile(): Observable<void> {
     return Observable.create((observer) => {
       if (this.fd) {
         observer.next(this.fd);
@@ -24,43 +56,31 @@ export class ChunkWriter {
           observer.error(err);
           return;
         }
-        this.fd = fd;        
+        this.fd = fd;
         observer.next(this.fd);
         observer.complete();
       });
     });
   }
 
-  saveChunkData(chunkData: ChunkData): Observable<void> {
-    return Observable.create((observer) => {
-      if (!this.fd) {
-        observer.next();
-        observer.complete();
+  private writeChunkData(chunkData: ChunkData, observer) {
+    const blob: any = chunkData.blob;
+    const range: ChunkByteRange = chunkData.range;
+    const offset: number = 0;
+    const position: number = range.start;
+    const chunkLength: number = range.end - range.start + 1;
+    if (this.debugMode) console.log("Got chunk:", range, "position:", position, "chunkLength:", chunkLength);
+
+    fs.write(this.fd, blob, offset, chunkLength, position, (err: NodeJS.ErrnoException) => {
+      if (err) {
+        observer.error(err);
         return;
       }
-      const blob: any = chunkData.blob;
-      const range: ChunkByteRange = chunkData.range;
-      const offset: number = 0;
-      const position: number = range.start;
-      const chunkLength: number = range.end - range.start + 1;
-      console.log("Got chunk:", range);
-      console.log("blob:", blob);
-      console.log("offset:", offset);
-      console.log("position:", position);
-      console.log("chunkLength:", chunkLength);
-
-      fs.write(this.fd, blob, offset, chunkLength, position, (err: NodeJS.ErrnoException) => {
-        if (err) {
-          observer.error(err);
-          return;
-        }
-        observer.next();
-        observer.complete();
-      });
+      observer.next();
     });
   }
 
-  closeFile(): Observable<void> {
+  private closeFile(): Observable<void> {
     return Observable.create((observer) => {
       if (!this.fd) {
         observer.next();
@@ -72,7 +92,7 @@ export class ChunkWriter {
           observer.error(err);
           return;
         }
-        console.log('file closed');
+        if (this.debugMode) console.log('file closed');
         observer.next();
         observer.complete();
       });

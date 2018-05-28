@@ -9,16 +9,21 @@ export class ChunkDownloader {
   private chunkByteRange: ChunkByteRange;
   private chunkSizeBytes: number;
   private chunkDownload$: Observable<ChunkData>;
+  private debugMode: boolean = false;
 
   constructor(url: string, chunkByteRange: ChunkByteRange) {
     this.url = url;
     this.chunkByteRange = chunkByteRange;
-    console.log("this.chunkByteRange", this.chunkByteRange);
+    if (this.debugMode) console.log("this.chunkByteRange", this.chunkByteRange);
     this.initSource();
   }
 
   getSource(): Observable<ChunkData> {
     return this.chunkDownload$;
+  }
+
+  enableDebugMode(): void {
+    this.debugMode = true;
   }
 
   private initSource(): void {

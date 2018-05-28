@@ -10,24 +10,35 @@ import { ChunkWriter } from './ChunkWriter';
 
 export class MultiGetDownloader {
   private url: string;
-  private isParallel: boolean = true;
-  private chunkSizeBytes: number = 2;
+  private filename: string;
   private numChunks: number = 4;
-  private filename: string = 'file.part';
+  private chunkSizeBytes: number = 1048576; // 1 MiB = 1024 KB * 1024 B
+  private isParallel: boolean = false;
 
-  constructor(url) {
+  constructor(url, filename) {
     this.url = url;
+    this.filename = filename;
+  }
+
+  setNumChunks(numChunks: number): this {
+    this.numChunks = numChunks;
+    return this;
+  }
+
+  setChunkSizeBytes(chunkSizeBytes: number): this {
+    this.chunkSizeBytes = chunkSizeBytes;
+    return this;
+  }
+
+  setIsParallel(isParallel: boolean): this {
+    this.isParallel = isParallel;
+    return this;
   }
 
   run(): Observable<void> {
     const chunkData$: Observable<ChunkData> = this.getChunkData();
     const chunkWriter: ChunkWriter = new ChunkWriter(this.filename);
-    const chunkDownloadWriter$ = chunkWriter.openFile()
-      .pipe(
-        flatMap(() => chunkData$),
-        flatMap((chunkData: ChunkData) => chunkWriter.saveChunkData(chunkData))
-      );
-    return chunkDownloadWriter$;
+    return chunkWriter.saveChunkData(chunkData$);
   }
 
   private getChunkData(): Observable<ChunkData> {

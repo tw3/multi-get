@@ -1,16 +1,27 @@
 import { MultiGetDownloader } from './MultiGetDownloader';
 import { ChunkData } from './ChunkData';
 
-const url = "https://dog.ceo/api/breed/affenpinscher/images/random";
-const multiGetDownloader: MultiGetDownloader = new MultiGetDownloader(url);
+const url: string = "https://dog.ceo/api/breed/affenpinscher/images/random";
+const filename: string = "file.part";
+const numChunks: number = 4;
+const chunkSizeBytes: number = 2;
+const isParallel: boolean = true;
+
+console.log(`Downloading first ${numChunks} chunks of '${url}' to '${filename}'`);
+const multiGetDownloader: MultiGetDownloader = new MultiGetDownloader(url, filename);
+multiGetDownloader
+  .setNumChunks(numChunks)
+  .setChunkSizeBytes(chunkSizeBytes)
+  .setIsParallel(isParallel);
+
 multiGetDownloader.run().subscribe(
   () => {
-    console.log('.');
+    process.stdout.write('.');
   },
   (error) => {
-    console.error("error: ", error);
+    console.error("[ERROR]", error);
   },
   () => {
-    console.log('done');
+    process.stdout.write('done');
   },
 );
