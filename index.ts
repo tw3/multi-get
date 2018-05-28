@@ -19,9 +19,10 @@ multiGetDownloader.run().subscribe(
     process.stdout.write('.');
   },
   (error) => {
-    console.error("[ERROR]", error);
+    const message = (error.hasOwnProperty('message')) ? error.message : error;
+    console.error("[ERROR]", message);
   },
   () => {
-    process.stdout.write('done');
+    process.stdout.write('done\n');
   },
 );

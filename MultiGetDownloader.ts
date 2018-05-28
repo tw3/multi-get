@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Observable, from, concat, merge } from 'rxjs';
 import { map, flatMap, share } from 'rxjs/operators';
-import * as _ from 'lodash';
 
 import { ChunkDownloader } from './ChunkDownloader';
 import { ChunkData } from "./ChunkData";
@@ -42,15 +41,15 @@ export class MultiGetDownloader {
   }
 
   private getChunkData(): Observable<ChunkData> {
-    // TODO: import only the range() function
-    const chunkData$Array: Observable<ChunkData>[] = _.range(this.numChunks) // i.e. [0, 1, 2, 3]
+    const idxRange: number[] = this.getIdxRange(); // i.e. [0, 1, 2, 3]
+    const chunkData$Array: Observable<ChunkData>[] = idxRange
       .map((chunkIdx: number) => {
         const chunkByteRange: ChunkByteRange = this.getChunkByteRange(chunkIdx);
-        const chunkDownloader = new ChunkDownloader(this.url, chunkByteRange);
+        const chunkDownloader: ChunkDownloader = new ChunkDownloader(this.url, chunkByteRange);
         const chunkDownload$: Observable<ChunkData> = chunkDownloader.getSource();
         return chunkDownload$;
       });
-    const combinationOperator = this.isParallel ? merge : concat;
+    const combinationOperator: Function = this.isParallel ? merge : concat;
     const chunkData$: Observable<ChunkData> = combinationOperator(...chunkData$Array);
     return chunkData$;
   }
@@ -60,6 +59,14 @@ export class MultiGetDownloader {
     const end: number = ((chunkIdx + 1) * this.chunkSizeBytes) - 1;
     const chunkRange: ChunkByteRange = { start, end };
     return chunkRange;
+  }
+
+  private getIdxRange(): number[] {
+    const idxRange = [];
+    for (let i = 0; i < this.numChunks; i++) {
+      idxRange.push(i);
+    }
+    return idxRange;
   }
 
 }
