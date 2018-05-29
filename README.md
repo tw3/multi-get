@@ -30,6 +30,8 @@ Install node modules:
 npm install
 ```
 
+## How to run
+
 Run app:
 
 ```bash
