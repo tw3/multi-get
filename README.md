@@ -39,8 +39,6 @@ npm install
 
 ## How to run
 
-Run app:
-
 ```bash
 ts-node index [OPTIONS] <url>
 ```
