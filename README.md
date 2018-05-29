@@ -49,7 +49,7 @@ cat test.chunk
 {"status":"success",
 ```
 
-## Help:
+## Options
 
 To see a list of options:
 
