@@ -20,7 +20,7 @@ export class ChunkWriter {
         .pipe(
           flatMap(() => chunkData$),
           flatMap((chunkData: ChunkData) => this.writeChunkData(chunkData)),
-        )
+      )
         .subscribe(
           () => {
             // Do nothing for every written chunk
@@ -45,7 +45,7 @@ export class ChunkWriter {
               () => observer.complete(),
             );
           },
-        );
+      );
     });
   }
 
@@ -56,6 +56,7 @@ export class ChunkWriter {
 
   openFile(): Observable<void> {
     return Observable.create((observer) => {
+      // Check if file is already opened
       if (this.fd) {
         if (this.verboseMode) {
           console.log('file already opened');
@@ -66,6 +67,12 @@ export class ChunkWriter {
       }
       if (this.verboseMode) {
         console.log('opening file', this.filename, 'for writing');
+      }
+      // Check if file already exists
+      const fileExists = fs.existsSync(this.filename);
+      if (fileExists) {
+        observer.error(`File '${this.filename}' already exists`);
+        return;
       }
       fs.open(this.filename, 'w', (err: NodeJS.ErrnoException, fd: number) => {
         if (err) {

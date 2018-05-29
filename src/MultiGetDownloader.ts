@@ -48,7 +48,12 @@ export class MultiGetDownloader {
     if (this.verboseMode) {
       chunkWriter.enableVerboseMode();
     }
-    return chunkWriter.saveChunkData(chunkData$);
+    // return chunkWriter.saveChunkData(chunkData$);
+    return chunkWriter.openFile()
+      .pipe(
+        flatMap(() => chunkData$),
+        flatMap((chunkData: ChunkData) => chunkWriter.writeChunkData(chunkData))
+      );
   }
 
   enableVerboseMode(): this {
