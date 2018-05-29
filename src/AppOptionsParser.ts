@@ -4,8 +4,8 @@ import * as URL from 'url';
 import { AppOptions } from './AppOptions';
 import { InvalidArgumentException } from './InvalidArgumentException';
 
-export namespace AppOptionsParser {
-  export function parse(): AppOptions {
+export class AppOptionsParser {
+  parse(): AppOptions {
     // Get command line arguments
     const args: minimist.ParsedArgs = minimist(process.argv.slice(2), {
       alias: {
@@ -15,33 +15,33 @@ export namespace AppOptionsParser {
         n: 'numchunks',
         s: 'chunksize',
         v: 'verbose',
-      }
+      },
     });
-  
+
     const hasHelpArg: boolean = args.hasOwnProperty('help');
     if (hasHelpArg) {
       return;
     }
-  
+
     // Get URL, the assumption is that we only support one url
-    const hasUrl: boolean = (args.hasOwnProperty('_') && args['_'].length > 0);
+    const hasUrl: boolean = (args.hasOwnProperty('_') && args._.length > 0);
     if (!hasUrl) {
       throw new InvalidArgumentException('URL is missing');
     }
-    const url: string = args['_'][0];
-  
-    const filename: string = getOutputFilename(args, url);
+    const url: string = args._[0];
+
+    const filename: string = this.getOutputFilename(args, url);
     const isParallel: boolean = args.hasOwnProperty('parallel');
-    const numChunks: number = <number>getArgValue(args, 'numchunks', 'Number of chunks', true);
-    const chunkSizeBytes: number = <number>getArgValue(args, 'chunksize', 'Chunks size (bytes)', true);
+    const numChunks: number = this.getArgValue(args, 'numchunks', 'Number of chunks', true) as number;
+    const chunkSizeBytes: number = this.getArgValue(args, 'chunksize', 'Chunks size (bytes)', true) as number;
     const verboseMode: boolean = args.hasOwnProperty('verbose');
-  
+
     const appOptions: AppOptions = { url, filename, isParallel, numChunks, chunkSizeBytes, verboseMode };
     return appOptions;
   }
 
-  export function showUsage(): void {
-    const command: string = "ts-node index";
+  showUsage(): void {
+    const command: string = 'ts-node index';
     const lines: string[] = [];
     lines.push(`Usage: ${command} [OPTIONS] url`);
     lines.push('  -o string');
@@ -57,12 +57,12 @@ export namespace AppOptionsParser {
     const message: string = lines.join('\n');
     console.log(message);
   }
-  
-  function getOutputFilename(args: minimist.ParsedArgs, url: string): string {
-    let outputFilename: string = <string>getArgValue(args, 'output', 'Output filename', false);
+
+  private getOutputFilename(args: minimist.ParsedArgs, url: string): string {
+    let outputFilename: string = this.getArgValue(args, 'output', 'Output filename', false) as string;
     if (outputFilename === undefined) {
       // Get output filename from url
-      outputFilename = "file.chunk"; // default value
+      outputFilename = 'file.chunk'; // default value
       const pathname: string = URL.parse(url).pathname;
       const pathnameParts: string[] = pathname.split('/');
       if (pathnameParts.length > 0) {
@@ -74,8 +74,9 @@ export namespace AppOptionsParser {
     }
     return outputFilename;
   }
-  
-  function getArgValue(args: minimist.ParsedArgs, argKey: string, argLabel: string, isValueNumber: boolean): string | number {
+
+  private getArgValue(args: minimist.ParsedArgs, argKey: string,
+                      argLabel: string, isValueNumber: boolean): string | number {
     let argValue: string | number;
     const hasArg: boolean = args.hasOwnProperty(argKey);
     if (hasArg) {

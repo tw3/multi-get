@@ -1,9 +1,9 @@
 import * as fs from 'fs';
-import { Observable, of } from "rxjs";
-import { flatMap } from 'rxjs/operators';
-import { ChunkData } from "./ChunkData";
+import { Observable, of } from 'rxjs';
 import { ObserveOnOperator } from 'rxjs/internal/operators/observeOn';
+import { flatMap } from 'rxjs/operators';
 import { ChunkByteRange } from './ChunkByteRange';
+import { ChunkData } from './ChunkData';
 
 export class ChunkWriter {
   private filename: string;
@@ -19,26 +19,32 @@ export class ChunkWriter {
       this.openFile()
         .pipe(
           flatMap(() => chunkData$),
-          flatMap((chunkData: ChunkData) => this.writeChunkData(chunkData))
+          flatMap((chunkData: ChunkData) => this.writeChunkData(chunkData)),
         )
         .subscribe(
-          () => { },
+          () => {
+            // Do nothing for every written chunk
+          },
           (err) => {
             this.closeFile().subscribe(
-              () => { },
-              (err) => { },
-              () => observer.error(err)
-            )
-            // observer.error(err);
+              () => {
+                // Do nothing
+              },
+              () => {
+                // Do nothing, error sent below
+              },
+              () => observer.error(err),
+            );
           },
           () => {
             this.closeFile().subscribe(
-              () => { },
+              () => {
+                // Do nothing
+              },
               (err) => observer.error(err),
-              () => observer.complete()
-            )
-            // observer.complete();
-          }
+              () => observer.complete(),
+            );
+          },
         );
     });
   }
@@ -52,14 +58,14 @@ export class ChunkWriter {
     return Observable.create((observer) => {
       if (this.fd) {
         if (this.verboseMode) {
-          console.log("file already opened");
+          console.log('file already opened');
         }
         observer.next(this.fd);
         observer.complete();
         return;
       }
       if (this.verboseMode) {
-        console.log("opening file", this.filename, "for writing");
+        console.log('opening file', this.filename, 'for writing');
       }
       fs.open(this.filename, 'w', (err: NodeJS.ErrnoException, fd: number) => {
         if (err) {
@@ -76,7 +82,7 @@ export class ChunkWriter {
   writeChunkData(chunkData: ChunkData): Observable<void> {
     return Observable.create((observer) => {
       if (!this.fd) {
-        observer.error("File must be opened before writing");
+        observer.error('File must be opened before writing');
         return;
       }
       const blob: any = chunkData.blob;
@@ -85,7 +91,7 @@ export class ChunkWriter {
       const position: number = range.start;
       const chunkLength: number = range.end - range.start + 1;
       if (this.verboseMode) {
-        console.log("Writing chunk:", range, "position:", position, "chunkLength:", chunkLength);
+        console.log('Writing chunk:', range, 'position:', position, 'chunkLength:', chunkLength);
       }
 
       fs.write(this.fd, blob, offset, chunkLength, position, (err: NodeJS.ErrnoException) => {
@@ -103,14 +109,14 @@ export class ChunkWriter {
     return Observable.create((observer) => {
       if (!this.fd) {
         if (this.verboseMode) {
-          console.log("file already closed");
+          console.log('file already closed');
         }
         observer.next();
         observer.complete();
         return;
       }
       if (this.verboseMode) {
-        console.log("closing file");
+        console.log('closing file');
       }
       fs.close(this.fd, (err: NodeJS.ErrnoException) => {
         if (err) {

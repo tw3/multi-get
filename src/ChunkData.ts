@@ -1,4 +1,4 @@
-import { ChunkByteRange } from "./ChunkByteRange";
+import { ChunkByteRange } from './ChunkByteRange';
 
 export interface ChunkData {
   blob: any;

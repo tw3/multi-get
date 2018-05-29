@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Observable, from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ChunkData } from "./ChunkData";
-import { ChunkByteRange } from "./ChunkByteRange";
+import { ChunkByteRange } from './ChunkByteRange';
+import { ChunkData } from './ChunkData';
 
 export class ChunkDownloader {
   private url: string;
@@ -14,7 +14,9 @@ export class ChunkDownloader {
   constructor(url: string, chunkByteRange: ChunkByteRange) {
     this.url = url;
     this.chunkByteRange = chunkByteRange;
-    if (this.verboseMode) console.log("this.chunkByteRange", this.chunkByteRange);
+    if (this.verboseMode) {
+      console.log('this.chunkByteRange', this.chunkByteRange);
+    }
     this.initSource();
   }
 
@@ -28,39 +30,38 @@ export class ChunkDownloader {
   }
 
   private initSource(): void {
-    var requestConfig: AxiosRequestConfig = {
+    const requestConfig: AxiosRequestConfig = {
       headers: {
-        'Range': `bytes=${this.chunkByteRange.start}-${this.chunkByteRange.end}`
+        Range: `bytes=${this.chunkByteRange.start}-${this.chunkByteRange.end}`,
       },
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer',
     };
     if (this.verboseMode) {
-      console.log("Creating chunk download source");
+      console.log('Creating chunk download source');
     }
     this.chunkDownload$ = Observable.create((observer) => {
       if (this.verboseMode) {
-        console.log("Fetching data from", this.url, "range", requestConfig.headers['Range']);
+        console.log('Fetching data from', this.url, 'range', requestConfig.headers.Range);
       }
       axios.get(this.url, requestConfig)
         .then((response: AxiosResponse) => {
           const chunkData: ChunkData = {
             range: this.chunkByteRange,
-            blob: response.data
+            blob: response.data,
           };
           if (this.verboseMode) {
-            console.log("Got chunk", chunkData.range);
+            console.log('Got chunk', chunkData.range);
           }
           observer.next(chunkData);
           observer.complete();
         })
         .catch((err) => {
           if (this.verboseMode) {
-            console.log("Error while fetching:", err.message);
+            console.log('Error while fetching:', err.message);
           }
           observer.error(err);
         });
     });
-
 
   }
 

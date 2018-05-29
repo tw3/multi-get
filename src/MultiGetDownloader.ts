@@ -1,10 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Observable, from, concat, merge } from 'rxjs';
-import { map, flatMap, share } from 'rxjs/operators';
+import { concat, from, merge, Observable } from 'rxjs';
+import { flatMap, map, share } from 'rxjs/operators';
 
-import { ChunkDownloader } from './ChunkDownloader';
-import { ChunkData } from "./ChunkData";
 import { ChunkByteRange } from './ChunkByteRange';
+import { ChunkData } from './ChunkData';
+import { ChunkDownloader } from './ChunkDownloader';
 import { ChunkWriter } from './ChunkWriter';
 
 export class MultiGetDownloader {
@@ -37,11 +37,11 @@ export class MultiGetDownloader {
 
   download(): Observable<void> {
     if (this.verboseMode) {
-      console.log("url", this.url);
-      console.log("filename", this.filename);
-      console.log("numChunks", this.numChunks);
-      console.log("chunkSizeBytes", this.chunkSizeBytes);
-      console.log("isParallel", this.isParallel);
+      console.log('url', this.url);
+      console.log('filename', this.filename);
+      console.log('numChunks', this.numChunks);
+      console.log('chunkSizeBytes', this.chunkSizeBytes);
+      console.log('isParallel', this.isParallel);
     }
     const chunkData$: Observable<ChunkData> = this.getChunkData();
     const chunkWriter: ChunkWriter = new ChunkWriter(this.filename);
@@ -58,7 +58,7 @@ export class MultiGetDownloader {
 
   private getChunkData(): Observable<ChunkData> {
     const idxRange: number[] = this.getIdxRange(); // i.e. [0, 1, 2, 3]
-    const chunkData$Array: Observable<ChunkData>[] = idxRange
+    const chunkData$Array: Array<Observable<ChunkData>> = idxRange
       .map((chunkIdx: number) => {
         const chunkByteRange: ChunkByteRange = this.getChunkByteRange(chunkIdx);
         const chunkDownloader: ChunkDownloader = new ChunkDownloader(this.url, chunkByteRange);
@@ -68,7 +68,7 @@ export class MultiGetDownloader {
         const chunkDownload$: Observable<ChunkData> = chunkDownloader.getSource();
         return chunkDownload$;
       });
-    const combinationOperator: Function = this.isParallel ? merge : concat;
+    const combinationOperator: (...Observable) => Observable<ChunkData> = this.isParallel ? merge : concat;
     const chunkData$: Observable<ChunkData> = combinationOperator(...chunkData$Array);
     return chunkData$;
   }

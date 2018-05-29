@@ -1,19 +1,20 @@
-import { MultiGetDownloader } from './src/MultiGetDownloader';
-import { ChunkData } from './src/ChunkData';
-import { AppOptionsParser } from './src/AppOptionsParser';
 import { AppOptions } from './src/AppOptions';
+import { AppOptionsParser } from './src/AppOptionsParser';
+import { ChunkData } from './src/ChunkData';
+import { MultiGetDownloader } from './src/MultiGetDownloader';
 
 function main() {
+  const appOptionsParser: AppOptionsParser = new AppOptionsParser();
   let appOptions: AppOptions;
   try {
-    appOptions = AppOptionsParser.parse();
+    appOptions = appOptionsParser.parse();
     if (appOptions === undefined) {
-      AppOptionsParser.showUsage();
+      appOptionsParser.showUsage();
       return;
     }
   } catch (e) {
     console.error(e.message);
-    AppOptionsParser.showUsage();
+    appOptionsParser.showUsage();
     return;
   }
 
