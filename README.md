@@ -8,7 +8,7 @@ files in multiple pieces simultaneously (saturating the network), then reassembl
 
 Features:
 * The URL for the source file is specified with a required command-line option
-* It uses the HTTP 'Range' header to download the file in chunks using separate GET requests
+* It uses the [HTTP 'Range' header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Range) to download the file in chunks using separate GET requests
 * The number of chunks/requests is configurable (default is 4)
 * The size of each chunk is configurable (default is 1 MiB)
 * The chunks can be downloaded serially or in parallel
@@ -49,8 +49,12 @@ cat test.chunk
 {"status":"success",
 ```
 
-For help:
+## Help:
+
+To see a list of options:
 
 ```bash
 ts-node index -h
 ```
+
+Please note that the server from which you are downloading must support downloads using the HTTP Range header.
