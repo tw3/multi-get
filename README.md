@@ -30,6 +30,12 @@ ts-node index -o test.chunk -p -s 2 -n 10 https://dog.ceo/api/breed/affenpinsche
 
 ... will make 10 parallel requests of 2 bytes each to the speficied url and save the reassembled chunks as "test.chunk".
 
+```bash
+cat test.chunk
+{"status":"success",
+```
+
+
 For help:
 
 ```bash
