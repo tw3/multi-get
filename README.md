@@ -15,6 +15,13 @@ Features:
 * The chunks are retrieved starting from the front of the file
 * The output filename is configurable
 
+## Pre-requisites
+
+You must have:
+* A bash shell installed localled
+* [Node.js](https://nodejs.org/) installed locally and in your shell's PATH
+* A file hosted on a server that supports the [HTTP Range header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests)
+
 ## Installing
 
 Install ts-node and typescript:
