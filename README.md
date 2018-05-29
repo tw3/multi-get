@@ -1,7 +1,9 @@
 # multi-get
 A Node.js application that downloads part of a file from a web server, in chunks.
 
-This is a simplified version of a “download booster”, which speeds up downloads by requesting
+![alt test](https://raw.githubusercontent.com/tw3/multi-get/master/multiget.png "Multi-GET illustration")
+
+This is a simplified version of a "download booster", which speeds up downloads by requesting
 files in multiple pieces simultaneously (saturating the network), then reassembling the pieces.
 
 Features:
