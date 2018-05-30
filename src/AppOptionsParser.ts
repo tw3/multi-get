@@ -50,7 +50,7 @@ export class AppOptionsParser {
     lines.push('        Download chunks in parallel instead of sequentally');
     lines.push('  -n number');
     lines.push('        Number of chunks to download');
-    lines.push('  -s');
+    lines.push('  -s number');
     lines.push('        Size of chunks to download in bytes');
     lines.push('  -v');
     lines.push('        Enable verbose mode');
