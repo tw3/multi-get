@@ -31,6 +31,11 @@ npm install -g ts-node
 npm install -g typescript
 ```
 
+Clone repo:
+```bash
+git clone https://github.com/tw3/multi-get.git
+```
+
 Install node modules:
 
 ```bash
