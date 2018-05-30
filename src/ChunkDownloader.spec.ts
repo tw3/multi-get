@@ -32,8 +32,7 @@ describe('ChunkDownloader.getSource()', () => {
       check(done, () => {
         const actualRange: ChunkByteRange = chunkData.range;
         const expectedStr: string = '{"status":"success","message":"https:\\/\\/';
-        const stringDecoder: NodeStringDecoder = new StringDecoder('utf8');
-        const actualStr: string = stringDecoder.write(chunkData.blob);
+        const actualStr: string = (new StringDecoder('utf8')).write(chunkData.blob);
         expect(actualStr).to.equal(expectedStr);
         expect(actualRange).to.equal(chunkByteRange);
       } );
