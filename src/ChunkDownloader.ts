@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { from, Observable } from 'rxjs';
+import { from, Observable, Observer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ChunkByteRange } from './model/ChunkByteRange';
@@ -8,7 +8,6 @@ import { ChunkData } from './model/ChunkData';
 export class ChunkDownloader {
   private url: string;
   private chunkByteRange: ChunkByteRange;
-  private chunkSizeBytes: number;
   private chunkDownload$: Observable<ChunkData>;
   private verboseMode: boolean = false;
 
@@ -40,7 +39,7 @@ export class ChunkDownloader {
     if (this.verboseMode) {
       console.log('Creating chunk download source');
     }
-    this.chunkDownload$ = Observable.create((observer) => {
+    this.chunkDownload$ = Observable.create((observer: Observer<ChunkData>) => {
       if (this.verboseMode) {
         console.log('Fetching data from', this.url, 'range', requestConfig.headers.Range);
       }

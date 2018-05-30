@@ -5,7 +5,7 @@ import { AppOptions } from './model/AppOptions';
 import { InvalidArgumentException } from './model/InvalidArgumentException';
 
 export class AppOptionsParser {
-  parse(): AppOptions {
+  parse(): AppOptions | undefined {
     // Get command line arguments
     const args: minimist.ParsedArgs = minimist(process.argv.slice(2), {
       alias: {
@@ -63,12 +63,15 @@ export class AppOptionsParser {
     if (outputFilename === undefined) {
       // Get output filename from url
       outputFilename = 'file.chunk'; // default value
-      const pathname: string = URL.parse(url).pathname;
-      const pathnameParts: string[] = pathname.split('/');
-      if (pathnameParts.length > 0) {
-        const lastPathnamePart: string = pathnameParts[pathnameParts.length - 1].trim();
-        if (lastPathnamePart !== '') {
-          outputFilename = lastPathnamePart;
+      const urlWithStringQuery: URL.UrlWithStringQuery = URL.parse(url);
+      if (urlWithStringQuery !== undefined) {
+        const pathname: string = urlWithStringQuery.pathname as string;
+        const pathnameParts: string[] = pathname.split('/');
+        if (pathnameParts.length > 0) {
+          const lastPathnamePart: string = pathnameParts[pathnameParts.length - 1].trim();
+          if (lastPathnamePart !== '') {
+            outputFilename = lastPathnamePart;
+          }
         }
       }
     }
@@ -76,8 +79,8 @@ export class AppOptionsParser {
   }
 
   private getArgValue(args: minimist.ParsedArgs, argKey: string,
-                      argLabel: string, isValueNumber: boolean): string | number {
-    let argValue: string | number;
+                      argLabel: string, isValueNumber: boolean): string | number| undefined {
+    let argValue: string | number | undefined = undefined;
     const hasArg: boolean = args.hasOwnProperty(argKey);
     if (hasArg) {
       argValue = args[argKey];

@@ -5,7 +5,7 @@ import { MultiGetDownloader } from './src/MultiGetDownloader';
 
 function main(): void {
   const appOptionsParser: AppOptionsParser = new AppOptionsParser();
-  let appOptions: AppOptions;
+  let appOptions: AppOptions | undefined;
   try {
     appOptions = appOptionsParser.parse();
     if (appOptions === undefined) {

@@ -17,7 +17,7 @@ export class MultiGetDownloader {
   private isParallel: boolean = false;
   private verboseMode: boolean = false;
 
-  constructor(url, filename) {
+  constructor(url: string, filename: string) {
     this.url = url;
     this.filename = filename;
   }
@@ -37,7 +37,7 @@ export class MultiGetDownloader {
     return this;
   }
 
-  download(): Observable<void> {
+  download(): Observable<boolean> {
     if (this.verboseMode) {
       console.log('url', this.url);
       console.log('filename', this.filename);

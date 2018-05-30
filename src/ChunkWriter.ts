@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Observer } from 'rxjs';
 import { ObserveOnOperator } from 'rxjs/internal/operators/observeOn';
 import { flatMap } from 'rxjs/operators';
 
@@ -16,7 +16,7 @@ export class ChunkWriter {
   }
 
   saveChunkData(chunkData$: Observable<ChunkData>): Observable<void> {
-    return Observable.create((observer) => {
+    return Observable.create((observer: Observer<ChunkData>) => {
       this.openFile()
         .pipe(
           flatMap(() => chunkData$),
@@ -55,8 +55,8 @@ export class ChunkWriter {
     return this;
   }
 
-  openFile(): Observable<void> {
-    return Observable.create((observer) => {
+  openFile(): Observable<number> {
+    return Observable.create((observer: Observer<number>) => {
       // Check if file is already opened
       if (this.fd) {
         if (this.verboseMode) {
@@ -87,8 +87,8 @@ export class ChunkWriter {
     });
   }
 
-  writeChunkData(chunkData: ChunkData): Observable<void> {
-    return Observable.create((observer) => {
+  writeChunkData(chunkData: ChunkData): Observable<boolean> {
+    return Observable.create((observer: Observer<boolean>) => {
       if (!this.fd) {
         observer.error('File must be opened before writing');
         return;
@@ -107,19 +107,19 @@ export class ChunkWriter {
           observer.error(err);
           return;
         }
-        observer.next();
+        observer.next(true);
         observer.complete();
       });
     });
   }
 
   closeFile(): Observable<void> {
-    return Observable.create((observer) => {
+    return Observable.create((observer: Observer<boolean>) => {
       if (!this.fd) {
         if (this.verboseMode) {
           console.log('file already closed');
         }
-        observer.next();
+        observer.next(true);
         observer.complete();
         return;
       }
@@ -134,7 +134,7 @@ export class ChunkWriter {
         if (this.verboseMode) {
           console.log('file closed');
         }
-        observer.next();
+        observer.next(true);
         observer.complete();
       });
     });
