@@ -7,6 +7,8 @@ import { ChunkData } from './ChunkData';
 import { ChunkDownloader } from './ChunkDownloader';
 import { ChunkWriter } from './ChunkWriter';
 
+type CombinationOperatorType = (...observables: Array<Observable<ChunkData>>) => Observable<ChunkData>;
+
 export class MultiGetDownloader {
   private url: string;
   private filename: string;
@@ -73,7 +75,7 @@ export class MultiGetDownloader {
         const chunkDownload$: Observable<ChunkData> = chunkDownloader.getSource();
         return chunkDownload$;
       });
-    const combinationOperator: (...Observable) => Observable<ChunkData> = this.isParallel ? merge : concat;
+    const combinationOperator: CombinationOperatorType = this.isParallel ? merge : concat;
     const chunkData$: Observable<ChunkData> = combinationOperator(...chunkData$Array);
     return chunkData$;
   }
@@ -86,8 +88,8 @@ export class MultiGetDownloader {
   }
 
   private getIdxRange(): number[] {
-    const idxRange = [];
-    for (let i = 0; i < this.numChunks; i++) {
+    const idxRange: number[] = [];
+    for (let i: number = 0; i < this.numChunks; i++) {
       idxRange.push(i);
     }
     return idxRange;

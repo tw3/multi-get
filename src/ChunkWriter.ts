@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { Observable, of } from 'rxjs';
 import { ObserveOnOperator } from 'rxjs/internal/operators/observeOn';
 import { flatMap } from 'rxjs/operators';
+
 import { ChunkByteRange } from './ChunkByteRange';
 import { ChunkData } from './ChunkData';
 
@@ -19,7 +20,7 @@ export class ChunkWriter {
       this.openFile()
         .pipe(
           flatMap(() => chunkData$),
-          flatMap((chunkData: ChunkData) => this.writeChunkData(chunkData)),
+          flatMap((chunkData: ChunkData) => this.writeChunkData(chunkData))
       )
         .subscribe(
           () => {
@@ -33,7 +34,7 @@ export class ChunkWriter {
               () => {
                 // Do nothing, error sent below
               },
-              () => observer.error(err),
+              () => observer.error(err)
             );
           },
           () => {
@@ -42,9 +43,9 @@ export class ChunkWriter {
                 // Do nothing
               },
               (err) => observer.error(err),
-              () => observer.complete(),
+              () => observer.complete()
             );
-          },
+          }
       );
     });
   }
@@ -69,7 +70,7 @@ export class ChunkWriter {
         console.log('opening file', this.filename, 'for writing');
       }
       // Check if file already exists
-      const fileExists = fs.existsSync(this.filename);
+      const fileExists: boolean = fs.existsSync(this.filename);
       if (fileExists) {
         observer.error(`File '${this.filename}' already exists`);
         return;

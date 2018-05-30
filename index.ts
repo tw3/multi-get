@@ -3,7 +3,7 @@ import { AppOptionsParser } from './src/AppOptionsParser';
 import { ChunkData } from './src/ChunkData';
 import { MultiGetDownloader } from './src/MultiGetDownloader';
 
-function main() {
+function main(): void {
   const appOptionsParser: AppOptionsParser = new AppOptionsParser();
   let appOptions: AppOptions;
   try {
@@ -44,7 +44,7 @@ function main() {
     },
     () => {
       process.stdout.write('done\n');
-    },
+    }
   );
 
 }

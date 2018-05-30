@@ -14,8 +14,8 @@ export class AppOptionsParser {
         p: 'parallel',
         n: 'numchunks',
         s: 'chunksize',
-        v: 'verbose',
-      },
+        v: 'verbose'
+      }
     });
 
     const hasHelpArg: boolean = args.hasOwnProperty('help');

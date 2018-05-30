@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { ChunkByteRange } from './ChunkByteRange';
 import { ChunkData } from './ChunkData';
 
@@ -32,9 +33,9 @@ export class ChunkDownloader {
   private initSource(): void {
     const requestConfig: AxiosRequestConfig = {
       headers: {
-        Range: `bytes=${this.chunkByteRange.start}-${this.chunkByteRange.end}`,
+        Range: `bytes=${this.chunkByteRange.start}-${this.chunkByteRange.end}`
       },
-      responseType: 'arraybuffer',
+      responseType: 'arraybuffer'
     };
     if (this.verboseMode) {
       console.log('Creating chunk download source');
@@ -47,7 +48,7 @@ export class ChunkDownloader {
         .then((response: AxiosResponse) => {
           const chunkData: ChunkData = {
             range: this.chunkByteRange,
-            blob: response.data,
+            blob: response.data
           };
           if (this.verboseMode) {
             console.log('Got chunk', chunkData.range);
