@@ -3,8 +3,8 @@ import { Observable, of } from 'rxjs';
 import { ObserveOnOperator } from 'rxjs/internal/operators/observeOn';
 import { flatMap } from 'rxjs/operators';
 
-import { ChunkByteRange } from './ChunkByteRange';
-import { ChunkData } from './ChunkData';
+import { ChunkByteRange } from './model/ChunkByteRange';
+import { ChunkData } from './model/ChunkData';
 
 export class ChunkWriter {
   private filename: string;

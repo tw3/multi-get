@@ -1,8 +1,8 @@
 import * as minimist from 'minimist';
 import * as URL from 'url';
 
-import { AppOptions } from './AppOptions';
-import { InvalidArgumentException } from './InvalidArgumentException';
+import { AppOptions } from './model/AppOptions';
+import { InvalidArgumentException } from './model/InvalidArgumentException';
 
 export class AppOptionsParser {
   parse(): AppOptions {

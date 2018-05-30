@@ -2,8 +2,8 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ChunkByteRange } from './ChunkByteRange';
-import { ChunkData } from './ChunkData';
+import { ChunkByteRange } from './model/ChunkByteRange';
+import { ChunkData } from './model/ChunkData';
 
 export class ChunkDownloader {
   private url: string;

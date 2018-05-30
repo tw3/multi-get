@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import 'mocha';
 import { Observable } from 'rxjs';
 
-import { ChunkByteRange } from '../src/ChunkByteRange';
-import { ChunkData } from '../src/ChunkData';
-import { ChunkDownloader } from '../src/ChunkDownloader';
+import { ChunkDownloader } from './ChunkDownloader';
+import { ChunkByteRange } from './model/ChunkByteRange';
+import { ChunkData } from './model/ChunkData';
 
-describe('getSource', () => {
+describe('ChunkDownloader.getSource()', () => {
 
   it('should return an observable', () => {
     const url: string = 'foobar';

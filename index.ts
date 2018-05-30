@@ -1,6 +1,6 @@
-import { AppOptions } from './src/AppOptions';
+import { AppOptions } from './src/model/AppOptions';
 import { AppOptionsParser } from './src/AppOptionsParser';
-import { ChunkData } from './src/ChunkData';
+import { ChunkData } from './src/model/ChunkData';
 import { MultiGetDownloader } from './src/MultiGetDownloader';
 
 function main(): void {

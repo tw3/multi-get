@@ -2,8 +2,8 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { concat, from, merge, Observable } from 'rxjs';
 import { flatMap, map, share } from 'rxjs/operators';
 
-import { ChunkByteRange } from './ChunkByteRange';
-import { ChunkData } from './ChunkData';
+import { ChunkByteRange } from './model/ChunkByteRange';
+import { ChunkData } from './model/ChunkData';
 import { ChunkDownloader } from './ChunkDownloader';
 import { ChunkWriter } from './ChunkWriter';
 
