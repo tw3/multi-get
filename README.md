@@ -64,6 +64,8 @@ cat test.chunk
 
 ![alt text](https://raw.githubusercontent.com/tw3/multi-get/master/multiget_shell.png "Multi-GET shell")
 
+[Online Demo](https://repl.it/@tw3/Multi-GET)
+
 ## Options
 
 To see a list of options:
