@@ -52,13 +52,13 @@ ts-node index [OPTIONS] <url>
 For example:
 
 ```bash
-ts-node index -o test.chunk -p -s 2 -n 10 https://dog.ceo/api/breed/affenpinscher/images/random
+ts-node index -o partial.json -p -s 2 -n 10 https://dog.ceo/api/breed/affenpinscher/images/random
 ```
 
-... will make 10 parallel requests of 2 bytes each to the "random" url and save the reassembled chunks as "test.chunk".
+... will make 10 parallel requests of 2 bytes each to the "random" url and save the reassembled chunks as "partial.json".
 
 ```bash
-cat test.chunk
+cat partial.json
 {"status":"success",
 ```
 
