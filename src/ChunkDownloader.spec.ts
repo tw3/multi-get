@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 import 'mocha';
 import { Observable } from 'rxjs';
 import { StringDecoder, NodeStringDecoder } from 'string_decoder';
@@ -28,24 +28,21 @@ describe('ChunkDownloader.getSource()', () => {
     };
     const chunkDownloader: ChunkDownloader = new ChunkDownloader(url, chunkByteRange);
     const chunkData$: Observable<ChunkData> = chunkDownloader.getSource();
-    chunkData$.subscribe((chunkData: ChunkData) => {
-      check(done, () => {
+    chunkData$.subscribe(
+      (chunkData: ChunkData) => {
         const actualRange: ChunkByteRange = chunkData.range;
         const expectedStr: string = '{"status":"success","message":"https:\\/\\/';
         const actualStr: string = (new StringDecoder('utf8')).write(chunkData.blob);
         expect(actualStr).to.equal(expectedStr);
         expect(actualRange).to.equal(chunkByteRange);
-      } );
-    });
+      },
+      (err) => {
+        assert.fail(`Error thrown: ${err}`);
+      },
+      () => {
+        done();
+      }
+    );
   });
 
 });
-
-function check(done: (e?: any) => void, f: () => void): void {
-  try {
-    f();
-    done();
-  } catch (e) {
-    done(e);
-  }
-}
