@@ -1,5 +1,5 @@
 # multi-get
-A Node.js application that downloads part of a file from a web server, in chunks.
+A Node.js application that downloads part of a file from a web server in chunks using [axios](https://github.com/axios/axios) and [RxJS 6](https://github.com/ReactiveX/rxjs).
 
 ![alt text](https://raw.githubusercontent.com/tw3/multi-get/master/multiget_illustration.png "Multi-GET illustration")
 
