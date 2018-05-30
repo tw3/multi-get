@@ -39,6 +39,7 @@ git clone https://github.com/tw3/multi-get.git
 Install node modules:
 
 ```bash
+cd multi-get
 npm install
 ```
 
