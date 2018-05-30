@@ -1,7 +1,7 @@
 # multi-get
 A Node.js application that downloads part of a file from a web server, in chunks.
 
-![alt test](https://raw.githubusercontent.com/tw3/multi-get/master/multiget.png "Multi-GET illustration")
+![alt text](https://raw.githubusercontent.com/tw3/multi-get/master/multiget_illustration.png "Multi-GET illustration")
 
 This is a simplified version of a "download booster", which speeds up downloads by requesting
 files in multiple pieces simultaneously (saturating the network), then reassembling the pieces.
@@ -61,6 +61,8 @@ ts-node index -o test.chunk -p -s 2 -n 10 https://dog.ceo/api/breed/affenpinsche
 cat test.chunk
 {"status":"success",
 ```
+
+![alt text](https://raw.githubusercontent.com/tw3/multi-get/master/multiget_shell.png "Multi-GET shell")
 
 ## Options
 
