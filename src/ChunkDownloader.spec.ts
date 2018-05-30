@@ -16,7 +16,7 @@ describe('ChunkDownloader.getSource()', () => {
     };
     const chunkDownloader: ChunkDownloader = new ChunkDownloader(url, chunkByteRange);
     const chunkData$: Observable<ChunkData> = chunkDownloader.getSource();
-    expect(chunkData$).to.instanceOf(new Observable<ChunkData>());
+    expect(chunkData$).to.instanceOf(Observable);
   });
 
 });
